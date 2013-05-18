@@ -110,11 +110,15 @@ function git_ahead_behind_state
   set behind (git_commits_different_remotely | grep '<' | wc -l | tr -d ' ' ^ /dev/null)
 
   if [ $ahead -gt 0 -a $behind -gt 0 ]
-    echo (printf "%s:%s%s,%s%s" (set_color $fish_color_git_prompt) (set_color green) "$ahead" (set_color red) "$behind")
+    echo (printf "%s:%s%s,%s%s" (set_color $fish_color_git_prompt) \
+                                (set_color green) "$ahead" \
+                                (set_color red) "$behind")
   else if [ $ahead -gt 0 ]
-    echo (printf "%s:%s%s" (set_color $fish_color_git_prompt) (set_color green) "$ahead")
+    echo (printf "%s:%s%s" (set_color $fish_color_git_prompt) \
+                           (set_color green) "$ahead")
   else if [ $behind -gt 0 ]
-    echo (printf "%s:%s%s" (set_color $fish_color_git_prompt) (set_color red) "$behind")
+    echo (printf "%s:%s%s" (set_color $fish_color_git_prompt) \
+                           (set_color red) "$behind")
   else
     echo
   end
