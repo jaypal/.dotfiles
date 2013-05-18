@@ -84,6 +84,42 @@ function git_prompt_dirty_state
   end
 end
 
+function git_remote_name
+  set name (git config branch.(git_current_branch).remote ^ /dev/null)
+  echo $name
+end
+
+function git_remote_ref
+  if [ git_remote_name = '.' ]
+    echo (git_merge_name)
+  else
+    set branch_name (git config branch.(git_current_branch).merge | cut -d '/' -f3 ^ /dev/null)
+    echo "refs/remotes/"(git_remote_name)"/$branch_name"
+  end
+end
+
+function git_commits_different_remotely
+  git rev-list --left-right (git_remote_ref)...HEAD
+end
+
+# Prints the number of commits your are ahead or behind of the upstream repo,
+# e.g. '2,3' means 2 ahead, 3 behind
+# TODO: Make the colors customizable
+function git_ahead_behind_state
+  set ahead  (git_commits_different_remotely | grep '>' | wc -l | tr -d ' ' ^ /dev/null)
+  set behind (git_commits_different_remotely | grep '<' | wc -l | tr -d ' ' ^ /dev/null)
+
+  if [ $ahead -gt 0 -a $behind -gt 0 ]
+    echo (printf "%s:%s%s,%s%s" (set_color $fish_color_git_prompt) (set_color green) "$ahead" (set_color red) "$behind")
+  else if [ $ahead -gt 0 ]
+    echo (printf "%s:%s%s" (set_color $fish_color_git_prompt) (set_color green) "$ahead")
+  else if [ $behind -gt 0 ]
+    echo (printf "%s:%s%s" (set_color $fish_color_git_prompt) (set_color red) "$behind")
+  else
+    echo
+  end
+end
+
 function git_prompt_prefix
   set_color $fish_color_git_prompt
   echo 'git('
@@ -97,9 +133,9 @@ end
 function git_prompt
   if [ -n (git_short_sha) ]
     if [ $argv[1] = 'right' ]
-      echo (git_prompt_dirty_state)(git_prompt_prefix)(git_branch_state)(git_prompt_suffix)
+      echo (git_prompt_dirty_state)(git_prompt_prefix)(git_branch_state)(git_ahead_behind_state)(git_prompt_suffix)
     else
-      echo (git_prompt_prefix)(git_branch_state)(git_prompt_suffix)(git_prompt_dirty_state)
+      echo (git_prompt_prefix)(git_branch_state)(git_ahead_behind_state)(git_prompt_suffix)(git_prompt_dirty_state)
     end
   end
 end
