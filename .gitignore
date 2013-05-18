@@ -1,1 +1,4 @@
+.config.symlink/fish/*
+!.config.symlink/fish/config.fish
+
 secret/
