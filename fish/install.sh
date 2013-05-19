@@ -1,11 +1,10 @@
 #!/bin/sh
 #
-# Installs a simple file in ~/.config/fish/config.fish that sources the
-# ~/.fishrc
+# Symlink ~/.dotfiles/fish/.fishrc to the annoying ~/.config/fish/fish.config
 
 type fish >/dev/null 2>&1 || { echo "fish not installed"; exit; }
 
-file=".fishrc"
+file="$PWD/fish/.fishrc"
 target="$HOME/.config/fish/config.fish"
 
 if [ -e "$target" ] || [ -h "$target" ]; then
@@ -34,4 +33,4 @@ fi
 
 echo "Installing $target"
 mkdir -p $(dirname $target)
-ln -s "$PWD/fish/$file" "$target"
+ln -s "$file" "$target"
