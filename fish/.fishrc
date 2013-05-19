@@ -1,0 +1,14 @@
+# Remove greeting
+set fish_greeting
+
+# .dotfiles
+set -x DOTFILES $HOME/.dotfiles
+
+# Configuration
+for file in (find $DOTFILES/fish/ -name '*.fish')
+  . $file
+end
+
+for file in (find $DOTFILES -name "*.fish" -and -not -path "$DOTFILES/fish/*")
+  . $file
+end

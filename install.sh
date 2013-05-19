@@ -18,8 +18,7 @@ for file in $symlinks; do
         if ! $overwrite_all && ! $backup_all; then
             while true; do
                 echo "$target already exists"
-                echo "[s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all "
-                read answer
+                read -p "[s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all " answer
                 case $answer in
                     "s" ) continue 2;; # continue the outer for loop
                     "S" ) break 2;;    # break out of the outer for loop
@@ -43,4 +42,14 @@ for file in $symlinks; do
 
     echo "Installing $target"
     ln -s "$PWD/$file" "$target"
+done
+
+# Run all other install hooks
+installers=$(find . -name "install.sh" -and -not -wholename "./install.sh")
+
+for file in $installers; do
+    echo
+    echo "Running $file"
+
+    sh $file
 done
