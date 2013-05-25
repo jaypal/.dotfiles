@@ -12,3 +12,28 @@ end
 for file in (find $DOTFILES -name "*.fish" -and -not -path "$DOTFILES/fish/*")
   . $file
 end
+
+# Homebrew
+if [ (type brew ^ /dev/null) ]
+  set PATH /usr/local/bin $PATH
+  set PATH /usr/local/sbin $PATH
+end
+
+# Cabal
+if [ -d ~/.cabal/bin ]
+  set PATH ~/.cabal/bin $PATH
+end
+
+# Toast
+if [ -d ~/.toast/armed/bin ]
+  set PATH ~/.toast/armed/bin $PATH
+end
+
+# Android
+if [ -d /usr/local/Cellar/android-sdk/r20 ]
+  set ANDROID_HOME /usr/local/Cellar/android-sdk/r20
+end
+
+if [ -d /usr/local/Cellar/android-ndk/r8/ ]
+  set ANDROID_NDK_HOME /usr/local/Cellar/android-ndk/r8/
+end
