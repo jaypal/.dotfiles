@@ -44,12 +44,6 @@ for file in $symlinks; do
     ln -s "$PWD/$file" "$target"
 done
 
-# Run all other install hooks
-installers=$(find . -name "install.sh" -and -not -wholename "./install.sh")
+set -e
 
-for file in $installers; do
-    echo
-    echo "Running $file"
-
-    sh $file
-done
+find . -name "*.install" | while read installer ; do sh -c "${installer}" ; done
